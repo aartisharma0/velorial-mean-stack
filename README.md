@@ -262,34 +262,6 @@ veloria-mean/
 
 ---
 
-## Features Matching Laravel Version
-
-| Feature | Status |
-|---------|--------|
-| Admin Dashboard with stats | Done |
-| Categories CRUD | Done |
-| Products CRUD with variants | Done |
-| Orders management + status update | Done |
-| Customers list + block/activate | Done |
-| Coupons CRUD + validation | Done |
-| Reviews with verified purchase check | Done |
-| Subscribers + Enquiries | Done |
-| Product listing with filters, sort, search | Done |
-| Product detail with variants, reviews | Done |
-| Session-based cart (localStorage) | Done |
-| Wishlist (heart toggle) | Done |
-| Checkout with Stripe + COD | Done |
-| User account (profile, orders, addresses) | Done |
-| Live search autocomplete | Done |
-| Dark mode toggle | Done |
-| Responsive design | Done |
-| JWT authentication | Done |
-| Role-based access control | Done |
-| Toast notifications | Done |
-| Static pages (shipping, returns, FAQs, terms, privacy) | Done |
-
----
-
 ## Connect With Me
 
 **Built by Aarti Sharma**
