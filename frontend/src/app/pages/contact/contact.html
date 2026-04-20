@@ -1,0 +1,15 @@
+<div class="container py-5" style="max-width:800px;">
+  <h2 class="fw-bold text-center mb-4" style="font-family:'Playfair Display',serif;">Get in Touch</h2>
+  <div class="card border-0 shadow-sm"><div class="card-body p-4">
+    <form (ngSubmit)="submit()">
+      <div class="row g-3">
+        <div class="col-md-6"><input class="form-control" [(ngModel)]="form.name" name="name" placeholder="Your Name" required></div>
+        <div class="col-md-6"><input class="form-control" [(ngModel)]="form.email" name="email" placeholder="Email" required></div>
+        <div class="col-md-6"><input class="form-control" [(ngModel)]="form.phone" name="phone" placeholder="Phone"></div>
+        <div class="col-md-6"><select class="form-select" [(ngModel)]="form.subject" name="subject" required><option value="">Select Subject</option><option>Order Issue</option><option>Product Query</option><option>Return/Exchange</option><option>Feedback</option><option>Other</option></select></div>
+        <div class="col-12"><textarea class="form-control" [(ngModel)]="form.message" name="msg" rows="5" placeholder="Your message..." required></textarea></div>
+        <div class="col-12"><button class="btn btn-veloria" type="submit"><i class="bi bi-send me-2"></i>Send Message</button></div>
+      </div>
+    </form>
+  </div></div>
+</div>

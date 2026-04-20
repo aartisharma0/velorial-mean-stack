@@ -1,0 +1,40 @@
+<div class="d-flex">
+  <div class="admin-sidebar d-none d-lg-flex flex-column flex-shrink-0">
+    <div class="p-3" style="border-bottom:1px solid rgba(255,255,255,0.1);">
+      <a routerLink="/admin" class="text-decoration-none d-flex align-items-center">
+        <i class="bi bi-gem fs-4 me-2" style="color:var(--veloria-primary-light);"></i>
+        <div><span class="fs-5 fw-bold" style="font-family:'Playfair Display',serif;letter-spacing:2px;color:var(--veloria-primary-light);">VELORIA</span><div class="small" style="color:rgba(255,255,255,0.4);font-size:0.65rem;">ADMIN PANEL</div></div>
+      </a>
+    </div>
+    <nav class="nav flex-column py-3 flex-grow-1">
+      <a class="nav-link" routerLink="/admin/dashboard" routerLinkActive="active"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+      <div class="px-3 py-2 mt-2"><small class="text-uppercase fw-semibold" style="color:rgba(255,255,255,0.3);font-size:0.65rem;">Catalogue</small></div>
+      <a class="nav-link" routerLink="/admin/categories" routerLinkActive="active"><i class="bi bi-folder"></i> Categories</a>
+      <a class="nav-link" routerLink="/admin/products" routerLinkActive="active"><i class="bi bi-handbag"></i> Products</a>
+      <div class="px-3 py-2 mt-2"><small class="text-uppercase fw-semibold" style="color:rgba(255,255,255,0.3);font-size:0.65rem;">Sales</small></div>
+      <a class="nav-link" routerLink="/admin/orders" routerLinkActive="active"><i class="bi bi-bag-check"></i> Orders</a>
+      <a class="nav-link" routerLink="/admin/customers" routerLinkActive="active"><i class="bi bi-people"></i> Customers</a>
+      <div class="px-3 py-2 mt-2"><small class="text-uppercase fw-semibold" style="color:rgba(255,255,255,0.3);font-size:0.65rem;">Marketing</small></div>
+      <a class="nav-link" routerLink="/admin/coupons" routerLinkActive="active"><i class="bi bi-ticket-perforated"></i> Coupons</a>
+      <a class="nav-link" routerLink="/admin/reviews" routerLinkActive="active"><i class="bi bi-star"></i> Reviews</a>
+      <a class="nav-link" routerLink="/admin/subscribers" routerLinkActive="active"><i class="bi bi-envelope"></i> Subscribers</a>
+      <a class="nav-link" routerLink="/admin/enquiries" routerLinkActive="active"><i class="bi bi-chat-dots"></i> Enquiries</a>
+      <div class="px-3 py-2 mt-2"><small class="text-uppercase fw-semibold" style="color:rgba(255,255,255,0.3);font-size:0.65rem;">System</small></div>
+      <a class="nav-link" routerLink="/admin/settings" routerLinkActive="active"><i class="bi bi-gear"></i> Settings</a>
+    </nav>
+    <div class="p-3" style="border-top:1px solid rgba(255,255,255,0.08);">
+      <div class="d-flex align-items-center">
+        <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width:36px;height:36px;background:var(--veloria-primary);"><span class="fw-bold text-white small">{{auth.user()?.name?.charAt(0)}}</span></div>
+        <div class="flex-grow-1"><div class="small fw-semibold text-white">{{auth.user()?.name}}</div><div class="small" style="color:rgba(255,255,255,0.4);font-size:0.7rem;">Admin</div></div>
+        <button class="btn btn-link p-0" style="color:rgba(255,255,255,0.5);" (click)="logout()"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="flex-grow-1 min-vh-100" style="background:#f5f5f5;">
+    <nav class="navbar navbar-light bg-white border-bottom px-3 px-md-4 py-2">
+      <div class="d-flex align-items-center gap-2"><h5 class="mb-0 fw-semibold" style="font-size:1.1rem;">Admin Panel</h5></div>
+      <a routerLink="/" class="btn btn-sm px-3" style="border:1.5px solid var(--veloria-primary);color:var(--veloria-primary);border-radius:20px;font-size:0.8rem;" target="_blank"><i class="bi bi-eye me-1"></i>View Store</a>
+    </nav>
+    <div class="p-3 p-md-4"><router-outlet /></div>
+  </div>
+</div>

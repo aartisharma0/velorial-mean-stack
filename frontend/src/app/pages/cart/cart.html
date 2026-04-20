@@ -1,0 +1,194 @@
+<div class="container py-4 py-md-5">
+  <h1 class="fw-bold mb-4" style="font-family:'Playfair Display',serif;font-size:1.8rem;">
+    <i class="bi bi-bag me-2" style="color:var(--veloria-primary);"></i>Shopping Cart
+    @if (cart.cartCount() > 0) {
+      <span class="badge ms-2 px-2 py-1" style="background:var(--veloria-primary);font-size:0.7rem;vertical-align:middle;">{{ cart.cartCount() }}</span>
+    }
+  </h1>
+
+  @if (cart.items().length === 0) {
+    <!-- EMPTY CART -->
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-bag-x" style="font-size:5rem;color:var(--veloria-primary-light);"></i>
+      </div>
+      <h4 class="fw-semibold mb-2">Your cart is empty</h4>
+      <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+      <a routerLink="/shop" class="btn btn-veloria px-5 py-2 fw-semibold">
+        <i class="bi bi-bag me-2"></i>Start Shopping
+      </a>
+    </div>
+  } @else {
+    <div class="row g-4">
+      <!-- CART ITEMS -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm" style="border-radius:12px;">
+          <div class="card-body p-0">
+            @for (item of cart.items(); track item.productId + (item.variantId || ''); let i = $index; let last = $last) {
+              <div class="p-3 p-md-4" [class.border-bottom]="!last">
+                <div class="d-flex gap-3 align-items-start">
+                  <!-- Image -->
+                  <div class="flex-shrink-0 rounded-3 overflow-hidden" style="width:90px;height:90px;background:#f8f8f8;">
+                    <img
+                      [src]="item.image || 'https://placehold.co/90x90/f0f0f0/888?text=?'"
+                      [alt]="item.name"
+                      style="width:100%;height:100%;object-fit:cover;"
+                    >
+                  </div>
+                  <!-- Details -->
+                  <div class="flex-grow-1 min-width-0">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <p class="fw-semibold mb-1" style="font-size:0.95rem;">{{ item.name }}</p>
+                        @if (item.variantLabel) {
+                          <span class="badge me-1 mb-1" style="background:var(--veloria-pink-soft);color:var(--veloria-primary);border:1px solid var(--veloria-primary-light);font-size:0.72rem;">{{ item.variantLabel }}</span>
+                        }
+                        <div class="fw-bold mt-1" style="color:var(--veloria-primary);">₹{{ item.price | number }}</div>
+                      </div>
+                      <button class="btn btn-sm border-0 p-1 text-muted" (click)="removeItem(i)" title="Remove">
+                        <i class="bi bi-trash3 fs-5" style="color:#dc3545;"></i>
+                      </button>
+                    </div>
+                    <!-- Qty Controls -->
+                    <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
+                      <div class="d-flex align-items-center border rounded-3 overflow-hidden" style="width:fit-content;">
+                        <button class="btn border-0 px-2 py-1" (click)="updateQty(i, item.qty - 1)">
+                          <i class="bi bi-dash"></i>
+                        </button>
+                        <span class="px-3 py-1 fw-semibold border-start border-end" style="min-width:42px;text-align:center;font-size:0.9rem;">{{ item.qty }}</span>
+                        <button class="btn border-0 px-2 py-1" (click)="updateQty(i, item.qty + 1)" [disabled]="item.qty >= 10">
+                          <i class="bi bi-plus"></i>
+                        </button>
+                      </div>
+                      <span class="text-muted small">
+                        Subtotal: <span class="fw-semibold text-dark">₹{{ (item.price * item.qty) | number }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Continue Shopping -->
+        <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <a routerLink="/shop" class="btn btn-veloria-outline btn-sm px-4">
+            <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+          </a>
+          <button class="btn btn-sm text-danger px-3" (click)="cart.clearCart()">
+            <i class="bi bi-trash3 me-1"></i>Clear Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm" style="border-radius:12px;position:sticky;top:100px;z-index:10;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">Order Summary</h5>
+
+            <!-- Coupon Code -->
+            @if (cart.coupon()) {
+              <div class="d-flex align-items-center justify-content-between mb-3 p-2 px-3 rounded-3" style="background:rgba(25,135,84,0.08);border:1px solid rgba(25,135,84,0.3);">
+                <div class="small">
+                  <i class="bi bi-ticket-perforated text-success me-1"></i>
+                  <span class="fw-semibold">{{ cart.coupon() }}</span> applied
+                </div>
+                <button class="btn btn-sm p-0 text-danger" (click)="removeCoupon()" title="Remove coupon">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+            } @else {
+              <div class="mb-4">
+                <label class="form-label small fw-semibold">Coupon Code</label>
+                <div class="d-flex gap-2">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    [(ngModel)]="couponInput"
+                    placeholder="Enter coupon code"
+                    style="border-radius:8px;text-transform:uppercase;"
+                    (keyup.enter)="applyCoupon()"
+                  >
+                  <button
+                    class="btn btn-sm px-3 fw-semibold"
+                    style="background:var(--veloria-primary);color:white;border-radius:8px;white-space:nowrap;"
+                    (click)="applyCoupon()"
+                    [disabled]="couponApplying || !couponInput.trim()"
+                  >
+                    @if (couponApplying) { <span class="spinner-border spinner-border-sm"></span> } @else { Apply }
+                  </button>
+                </div>
+                @if (couponError) {
+                  <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ couponError }}</div>
+                }
+                <div class="text-muted mt-1" style="font-size:0.72rem;">Try: <strong>VELORIA10</strong></div>
+              </div>
+            }
+
+            <hr class="my-3">
+
+            <!-- Price Breakdown -->
+            <div class="d-flex justify-content-between mb-2 small">
+              <span class="text-muted">Subtotal ({{ cart.cartCount() }} items)</span>
+              <span class="fw-semibold">₹{{ cart.subtotal() | number }}</span>
+            </div>
+            @if (cart.discountAmount() > 0) {
+              <div class="d-flex justify-content-between mb-2 small">
+                <span class="text-success">Discount</span>
+                <span class="fw-semibold text-success">-₹{{ cart.discountAmount() | number }}</span>
+              </div>
+            }
+            <div class="d-flex justify-content-between mb-2 small">
+              <span class="text-muted">Tax (18% GST)</span>
+              <span class="fw-semibold">₹{{ cart.tax() | number }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 small">
+              <span class="text-muted">Shipping</span>
+              @if (cart.shipping() === 0) {
+                <span class="fw-semibold text-success">FREE</span>
+              } @else {
+                <span class="fw-semibold">₹{{ cart.shipping() | number }}</span>
+              }
+            </div>
+            @if (cart.shipping() > 0) {
+              <div class="mb-3 small p-2 rounded-2" style="background:#fff8e1;border:1px solid #ffe082;">
+                <i class="bi bi-truck me-1" style="color:#f9a825;"></i>
+                Add <strong>₹{{ (999 - cart.subtotal()) | number }}</strong> more for FREE shipping
+              </div>
+            }
+            <hr class="my-3">
+            <div class="d-flex justify-content-between mb-4">
+              <span class="fw-bold fs-5">Total</span>
+              <span class="fw-bold fs-5" style="color:var(--veloria-primary);">₹{{ cart.total() | number }}</span>
+            </div>
+
+            @if (auth.isLoggedIn()) {
+              <a routerLink="/checkout" class="btn btn-veloria w-100 py-2 fw-semibold">
+                <i class="bi bi-lock me-2"></i>Proceed to Checkout
+              </a>
+            } @else {
+              <a routerLink="/login" [queryParams]="{redirect: '/checkout'}" class="btn btn-veloria w-100 py-2 fw-semibold">
+                <i class="bi bi-person me-2"></i>Login to Checkout
+              </a>
+            }
+
+            <div class="text-center mt-3">
+              <small class="text-muted"><i class="bi bi-shield-check me-1"></i>Secure & encrypted checkout</small>
+            </div>
+
+            <!-- Payment icons -->
+            <div class="d-flex justify-content-center gap-2 mt-3">
+              @for (icon of ['bi-credit-card','bi-bank','bi-phone','bi-qr-code-scan']; track icon) {
+                <div class="rounded p-1 px-2" style="background:#f8f8f8;border:1px solid #eee;">
+                  <i class="bi {{ icon }} text-muted" style="font-size:1rem;"></i>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,351 @@
+@if (loading) {
+  <div class="container py-5">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="placeholder-glow">
+          <div class="placeholder rounded-3" style="height:480px;width:100%;display:block;"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="placeholder-glow">
+          <div class="placeholder col-4 mb-3" style="height:14px;"></div>
+          <div class="placeholder col-10 mb-2" style="height:28px;"></div>
+          <div class="placeholder col-6 mb-4" style="height:20px;"></div>
+          <div class="placeholder col-8 mb-2" style="height:14px;"></div>
+          <div class="placeholder col-8 mb-2" style="height:14px;"></div>
+          <div class="placeholder col-5 mb-2" style="height:14px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else if (!product) {
+  <div class="container py-5 text-center">
+    <i class="bi bi-exclamation-circle fs-1 text-muted mb-3 d-block"></i>
+    <h4 class="text-muted">Product not found</h4>
+    <a routerLink="/shop" class="btn btn-veloria mt-3">Back to Shop</a>
+  </div>
+} @else {
+  <div class="container py-4 py-md-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a routerLink="/" class="text-decoration-none" style="color:var(--veloria-primary);">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/shop" class="text-decoration-none" style="color:var(--veloria-primary);">Shop</a></li>
+        @if (product.category?.name) {
+          <li class="breadcrumb-item"><a [routerLink]="['/shop']" [queryParams]="{category: product.category?.slug}" class="text-decoration-none" style="color:var(--veloria-primary);">{{ product.category.name }}</a></li>
+        }
+        <li class="breadcrumb-item active text-muted">{{ product.name }}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-4 g-lg-5">
+      <!-- IMAGE GALLERY -->
+      <div class="col-md-6">
+        <div class="sticky-top" style="top:80px;">
+          <div class="rounded-3 overflow-hidden mb-3 position-relative" style="background:#f8f8f8;">
+            <img
+              [src]="selectedImage || 'https://placehold.co/600x600/f0f0f0/888?text=No+Image'"
+              [alt]="product.name"
+              class="w-100"
+              style="height:480px;object-fit:contain;"
+            >
+            @if (getDiscount() > 0) {
+              <span class="position-absolute top-0 start-0 m-3 badge fs-6 px-3 py-2" style="background:var(--veloria-primary);">
+                -{{ getDiscount() }}% OFF
+              </span>
+            }
+          </div>
+          <!-- Thumbnail strip -->
+          @if (product.images && product.images.length > 1) {
+            <div class="d-flex gap-2 overflow-auto pb-1">
+              @for (img of product.images; track img) {
+                <button
+                  class="border-0 p-0 flex-shrink-0"
+                  style="width:70px;height:70px;border-radius:8px;overflow:hidden;outline:2px solid transparent;transition:outline 0.2s;"
+                  [style.outline]="selectedImage === img ? '2px solid var(--veloria-primary)' : '2px solid transparent'"
+                  (click)="selectImage(img)"
+                >
+                  <img [src]="img" class="w-100 h-100" style="object-fit:cover;">
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- PRODUCT INFO -->
+      <div class="col-md-6">
+        <div class="product-category mb-1">{{ product.category?.name }}</div>
+        <h1 class="fw-bold mb-2" style="font-family:'Playfair Display',serif;font-size:1.8rem;">{{ product.name }}</h1>
+
+        <!-- Rating row -->
+        @if (reviews.length > 0) {
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="d-flex gap-1">
+              @for (star of ratingStars; track star) {
+                <i class="bi" style="font-size:0.9rem;"
+                   [class.bi-star-fill]="star <= averageRating"
+                   [class.bi-star-half]="star > averageRating && star < averageRating + 1"
+                   [class.bi-star]="star > averageRating + 0.5"
+                   [style.color]="star <= averageRating ? '#ffc107' : '#ccc'"></i>
+              }
+            </div>
+            <span class="small text-muted">({{ reviews.length }} reviews)</span>
+          </div>
+        }
+
+        <!-- Price -->
+        <div class="d-flex align-items-baseline gap-3 mb-4">
+          <span class="fw-bold" style="font-size:2rem;color:var(--veloria-primary);">₹{{ product.price | number }}</span>
+          @if (product.comparePrice && product.comparePrice > product.price) {
+            <span class="text-muted text-decoration-line-through fs-5">₹{{ product.comparePrice | number }}</span>
+            <span class="badge px-2 py-1" style="background:rgba(214,51,132,0.1);color:var(--veloria-primary);font-size:0.85rem;">{{ getDiscount() }}% off</span>
+          }
+        </div>
+
+        <!-- Stock badge -->
+        <div class="mb-3">
+          @if (product.stock > 10) {
+            <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>In Stock</span>
+          } @else if (product.stock > 0) {
+            <span class="badge px-3 py-2" style="background:#ff8c00;">
+              <i class="bi bi-exclamation-circle me-1"></i>Only {{ product.stock }} left
+            </span>
+          } @else {
+            <span class="badge bg-secondary px-3 py-2"><i class="bi bi-x-circle me-1"></i>Out of Stock</span>
+          }
+        </div>
+
+        <!-- Description -->
+        @if (product.description) {
+          <p class="text-muted mb-4" style="line-height:1.7;">{{ product.description }}</p>
+        }
+
+        <!-- Variants -->
+        @if (product.variants && product.variants.length > 0) {
+          <div class="mb-4">
+            <label class="fw-semibold small d-block mb-2">
+              Select Variant
+              @if (selectedVariantLabel) {
+                <span class="text-muted fw-normal">— {{ selectedVariantLabel }}</span>
+              }
+            </label>
+            <div class="d-flex flex-wrap gap-2">
+              @for (variant of product.variants; track variant._id) {
+                <button
+                  class="btn btn-sm px-3 py-1"
+                  style="border-radius:20px;font-size:0.85rem;transition:all 0.2s;"
+                  [style.background]="selectedVariantId === variant._id ? 'var(--veloria-primary)' : 'white'"
+                  [style.color]="selectedVariantId === variant._id ? 'white' : 'var(--veloria-dark)'"
+                  [style.border]="selectedVariantId === variant._id ? '1.5px solid var(--veloria-primary)' : '1.5px solid #ddd'"
+                  (click)="selectVariant(variant)"
+                  [disabled]="variant.stock === 0"
+                >{{ variant.label || variant.name }}</button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Quantity + Add to Cart -->
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+          <div class="d-flex align-items-center border rounded-3 overflow-hidden">
+            <button class="btn border-0 px-3 py-2" (click)="decrementQty()" [disabled]="quantity <= 1">
+              <i class="bi bi-dash fw-bold"></i>
+            </button>
+            <span class="px-4 py-2 fw-semibold border-start border-end" style="min-width:50px;text-align:center;">{{ quantity }}</span>
+            <button class="btn border-0 px-3 py-2" (click)="incrementQty()" [disabled]="quantity >= product.stock">
+              <i class="bi bi-plus fw-bold"></i>
+            </button>
+          </div>
+          <button
+            class="btn btn-veloria px-4 py-2 flex-grow-1 flex-md-grow-0 fw-semibold"
+            (click)="addToCart()"
+            [disabled]="product.stock === 0"
+          >
+            <i class="bi bi-bag-plus me-2"></i>
+            @if (product.stock === 0) { Out of Stock } @else { Add to Cart }
+          </button>
+          <button
+            class="btn px-3 py-2"
+            style="border:1.5px solid;border-radius:8px;transition:all 0.2s;"
+            [style.border-color]="isWishlisted ? 'var(--veloria-primary)' : '#ddd'"
+            [style.color]="isWishlisted ? 'var(--veloria-primary)' : 'var(--veloria-grey)'"
+            [style.background]="isWishlisted ? 'rgba(214,51,132,0.05)' : 'white'"
+            (click)="toggleWishlist()"
+            [title]="isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'"
+          >
+            <i class="bi fs-5" [class.bi-heart-fill]="isWishlisted" [class.bi-heart]="!isWishlisted"></i>
+          </button>
+        </div>
+
+        <!-- Perks -->
+        <div class="p-3 rounded-3 mb-4" style="background:var(--veloria-pink-soft);border:1px solid var(--veloria-primary-light);">
+          <div class="row g-2 small">
+            <div class="col-6 d-flex align-items-center gap-2">
+              <i class="bi bi-truck" style="color:var(--veloria-primary);"></i>
+              <span>Free shipping above ₹999</span>
+            </div>
+            <div class="col-6 d-flex align-items-center gap-2">
+              <i class="bi bi-arrow-return-left" style="color:var(--veloria-primary);"></i>
+              <span>30-day easy returns</span>
+            </div>
+            <div class="col-6 d-flex align-items-center gap-2">
+              <i class="bi bi-shield-check" style="color:var(--veloria-primary);"></i>
+              <span>Secure checkout</span>
+            </div>
+            <div class="col-6 d-flex align-items-center gap-2">
+              <i class="bi bi-patch-check" style="color:var(--veloria-primary);"></i>
+              <span>100% authentic</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted">Share:</span>
+          <a href="https://wa.me/?text={{ product.name }}" target="_blank" class="btn btn-sm px-2 py-1" style="background:#25d366;color:white;border-radius:6px;"><i class="bi bi-whatsapp"></i></a>
+          <a href="https://www.instagram.com/" target="_blank" class="btn btn-sm px-2 py-1" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:white;border-radius:6px;"><i class="bi bi-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div class="row mt-5 pt-3">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h3 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">
+            Customer Reviews
+            @if (reviews.length > 0) {
+              <span class="fs-6 fw-normal text-muted ms-2">({{ reviews.length }})</span>
+            }
+          </h3>
+          @if (auth.isLoggedIn()) {
+            <button class="btn btn-veloria-outline btn-sm px-3" (click)="showReviewForm = !showReviewForm">
+              <i class="bi bi-pencil me-1"></i>
+              @if (showReviewForm) { Cancel } @else { Write a Review }
+            </button>
+          } @else {
+            <a routerLink="/login" class="btn btn-veloria-outline btn-sm px-3">Login to Review</a>
+          }
+        </div>
+
+        <!-- Average Rating Summary -->
+        @if (reviews.length > 0) {
+          <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3" style="background:var(--veloria-pink-soft);border:1px solid var(--veloria-primary-light);">
+            <div class="text-center">
+              <div class="fw-bold" style="font-size:3rem;color:var(--veloria-primary);line-height:1;">{{ averageRating }}</div>
+              <div class="small text-muted">out of 5</div>
+            </div>
+            <div>
+              <div class="d-flex gap-1 mb-1">
+                @for (star of ratingStars; track star) {
+                  <i class="bi bi-star-fill" [style.color]="star <= averageRating ? '#ffc107' : '#e0e0e0'" style="font-size:1.1rem;"></i>
+                }
+              </div>
+              <div class="small text-muted">Based on {{ reviews.length }} reviews</div>
+            </div>
+          </div>
+        }
+
+        <!-- Review Form -->
+        @if (showReviewForm) {
+          <div class="card border-0 shadow-sm mb-4 p-4" style="border-radius:12px;border-left:3px solid var(--veloria-primary) !important;">
+            <h6 class="fw-bold mb-3">Write Your Review</h6>
+            <form (ngSubmit)="submitReview()">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Rating</label>
+                <div class="d-flex gap-2">
+                  @for (star of ratingStars; track star) {
+                    <button type="button" class="btn p-0 border-0" (click)="reviewForm.rating = star">
+                      <i class="bi bi-star-fill fs-4" [style.color]="star <= reviewForm.rating ? '#ffc107' : '#ddd'"></i>
+                    </button>
+                  }
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Title</label>
+                <input type="text" class="form-control" [(ngModel)]="reviewForm.title" name="reviewTitle" placeholder="Summary of your experience" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Review</label>
+                <textarea class="form-control" [(ngModel)]="reviewForm.comment" name="reviewComment" rows="4" placeholder="Tell others about your experience..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-veloria px-4" [disabled]="reviewSubmitting">
+                @if (reviewSubmitting) { <span class="spinner-border spinner-border-sm me-1"></span> }
+                Submit Review
+              </button>
+            </form>
+          </div>
+        }
+
+        <!-- Reviews List -->
+        @if (reviews.length === 0) {
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-chat-square-text fs-2 mb-2 d-block"></i>
+            <p>No reviews yet. Be the first to review this product!</p>
+          </div>
+        } @else {
+          @for (review of reviews; track review._id) {
+            <div class="card border-0 shadow-sm mb-3 p-3 p-md-4" style="border-radius:12px;">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:38px;height:38px;background:var(--veloria-primary);font-size:0.9rem;">
+                    {{ review.user?.name?.charAt(0) || 'U' }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold small">{{ review.user?.name || 'Anonymous' }}</div>
+                    <div class="text-muted" style="font-size:0.72rem;">{{ review.createdAt | date:'mediumDate' }}</div>
+                  </div>
+                </div>
+                <div class="d-flex gap-1">
+                  @for (star of ratingStars; track star) {
+                    <i class="bi bi-star-fill" [style.color]="star <= review.rating ? '#ffc107' : '#e0e0e0'" style="font-size:0.75rem;"></i>
+                  }
+                </div>
+              </div>
+              @if (review.title) {
+                <p class="fw-semibold mb-1 small">{{ review.title }}</p>
+              }
+              <p class="text-muted mb-0 small">{{ review.comment }}</p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- RELATED PRODUCTS -->
+    @if (relatedProducts.length > 0) {
+      <div class="mt-5 pt-3">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h3 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">You May Also Like</h3>
+          <a routerLink="/shop" class="small text-decoration-none" style="color:var(--veloria-primary);">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-3">
+          @for (rp of relatedProducts; track rp._id) {
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="product-card h-100">
+                <div class="position-relative overflow-hidden">
+                  <a [routerLink]="['/product', rp.slug]">
+                    <img
+                      [src]="rp.primaryImage || (rp.images && rp.images[0]) || 'https://placehold.co/400x300/f0f0f0/888?text=No+Image'"
+                      [alt]="rp.name"
+                      class="product-image w-100"
+                      style="height:220px;object-fit:cover;"
+                    >
+                  </a>
+                </div>
+                <div class="p-3">
+                  <div class="product-category mb-1">{{ rp.category?.name }}</div>
+                  <a [routerLink]="['/product', rp.slug]" class="text-decoration-none text-dark">
+                    <p class="product-title fw-semibold mb-2">{{ rp.name }}</p>
+                  </a>
+                  <span class="product-price">₹{{ rp.price | number }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

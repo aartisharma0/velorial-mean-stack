@@ -1,0 +1,23 @@
+<div class="container py-4">
+  <h4 class="fw-bold mb-4">My Addresses</h4>
+  <div class="row g-3">
+    @for(a of addresses;track a._id) {
+      <div class="col-md-6"><div class="card border-0 shadow-sm"><div class="card-body small">
+        <strong>{{a.fullName}}</strong> @if(a.isDefault){<span class="badge" style="background:var(--veloria-primary)">Default</span>}<br>
+        {{a.street}}<br>{{a.city}}, {{a.state}} {{a.zip}}<br>{{a.country}}
+        <div class="mt-2"><button class="btn btn-sm btn-outline-danger" (click)="del(a._id)"><i class="bi bi-trash"></i> Delete</button></div>
+      </div></div></div>
+    }
+  </div>
+  <div class="card border-0 shadow-sm mt-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Add Address</h6></div><div class="card-body">
+    <form (ngSubmit)="add()" class="row g-2">
+      <div class="col-md-6"><input class="form-control" [(ngModel)]="newAddr.fullName" name="fn" placeholder="Full Name" required></div>
+      <div class="col-md-6"><input class="form-control" [(ngModel)]="newAddr.phone" name="ph" placeholder="Phone"></div>
+      <div class="col-12"><input class="form-control" [(ngModel)]="newAddr.street" name="st" placeholder="Street" required></div>
+      <div class="col-md-4"><input class="form-control" [(ngModel)]="newAddr.city" name="ci" placeholder="City" required></div>
+      <div class="col-md-4"><input class="form-control" [(ngModel)]="newAddr.state" name="sa" placeholder="State" required></div>
+      <div class="col-md-4"><input class="form-control" [(ngModel)]="newAddr.zip" name="zi" placeholder="PIN" required></div>
+      <div class="col-12"><button class="btn btn-veloria btn-sm" type="submit">Save Address</button></div>
+    </form>
+  </div></div>
+</div>

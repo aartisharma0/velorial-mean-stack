@@ -1,0 +1,25 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h5 class="fw-bold mb-0">Customers</h5>
+  
+</div>
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light"><tr><th>Name</th><th>Details</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        @if(loading) { <tr><td colspan="3" class="text-center py-4"><span class="spinner-border spinner-border-sm"></span> Loading...</td></tr> }
+        @for(item of items; track item._id) {
+          <tr>
+            <td class="fw-semibold">{{item.name || item.code || item.email || item.orderNumber || 'N/A'}}</td>
+            <td class="small text-muted">{{item.slug || item.type || item.rating || item.status || item.subject || ''}}</td>
+            <td class="text-end">
+              
+              
+            </td>
+          </tr>
+        }
+        @if(!loading && items.length===0) { <tr><td colspan="3" class="text-center py-4 text-muted">No customers yet.</td></tr> }
+      </tbody>
+    </table>
+  </div>
+</div>

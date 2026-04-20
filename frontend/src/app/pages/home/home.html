@@ -1,0 +1,347 @@
+<!-- HERO SECTION -->
+<section class="hero-section position-relative overflow-hidden">
+  <div class="floating-orb" style="width:400px;height:400px;top:-100px;right:-100px;opacity:0.4;"></div>
+  <div class="floating-orb" style="width:250px;height:250px;bottom:-50px;left:-50px;opacity:0.3;animation-delay:-3s;"></div>
+  <div class="container position-relative" style="z-index:2;">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <p class="small text-uppercase fw-semibold mb-2" style="color:var(--veloria-primary-light);letter-spacing:3px;">
+          <i class="bi bi-gem me-2"></i>New Collection 2026
+        </p>
+        <h1 class="display-4 fw-bold mb-3" style="font-family:'Playfair Display',serif;line-height:1.15;">
+          Discover Your<br><span style="color:var(--veloria-primary-light);">Signature Style</span>
+        </h1>
+        <p class="lead mb-4" style="color:rgba(255,255,255,0.8);max-width:480px;">
+          Curated fashion for every occasion. From everyday elegance to statement pieces — find your perfect look.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a routerLink="/shop" class="btn btn-veloria px-4 py-2 fw-semibold">
+            <i class="bi bi-bag me-2"></i>Shop Now
+          </a>
+          <a routerLink="/shop" [queryParams]="{sort:'newest'}" class="btn btn-veloria-outline px-4 py-2 fw-semibold" style="border-color:white;color:white;">
+            New Arrivals
+          </a>
+        </div>
+        <div class="d-flex gap-4 mt-4 pt-2">
+          <div class="text-center">
+            <div class="fw-bold fs-5" style="color:var(--veloria-primary-light);">10K+</div>
+            <div class="small" style="color:rgba(255,255,255,0.6);">Products</div>
+          </div>
+          <div class="text-center">
+            <div class="fw-bold fs-5" style="color:var(--veloria-primary-light);">50K+</div>
+            <div class="small" style="color:rgba(255,255,255,0.6);">Customers</div>
+          </div>
+          <div class="text-center">
+            <div class="fw-bold fs-5" style="color:var(--veloria-primary-light);">4.8★</div>
+            <div class="small" style="color:rgba(255,255,255,0.6);">Rating</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div class="cube-scene">
+          <div class="cube">
+            <div class="cube-face cube-front"><i class="bi bi-bag-heart"></i><span>Fashion</span></div>
+            <div class="cube-face cube-back"><i class="bi bi-gem"></i><span>Jewellery</span></div>
+            <div class="cube-face cube-right"><i class="bi bi-shoe-fill"></i><span>Footwear</span></div>
+            <div class="cube-face cube-left"><i class="bi bi-stars"></i><span>Beauty</span></div>
+            <div class="cube-face cube-top"><i class="bi bi-handbag"></i><span>Bags</span></div>
+            <div class="cube-face cube-bottom"><i class="bi bi-heart"></i><span>Style</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BAR -->
+<section class="features-bar">
+  <div class="container">
+    <div class="row g-3 justify-content-center text-center">
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-truck feature-icon fs-5"></i>
+          <div class="text-start">
+            <div class="fw-semibold small">Free Shipping</div>
+            <div class="text-muted" style="font-size:0.72rem;">Orders above ₹999</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-arrow-return-left feature-icon fs-5"></i>
+          <div class="text-start">
+            <div class="fw-semibold small">Easy Returns</div>
+            <div class="text-muted" style="font-size:0.72rem;">30-day policy</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-shield-check feature-icon fs-5"></i>
+          <div class="text-start">
+            <div class="fw-semibold small">Secure Payment</div>
+            <div class="text-muted" style="font-size:0.72rem;">100% protected</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-headset feature-icon fs-5"></i>
+          <div class="text-start">
+            <div class="fw-semibold small">24/7 Support</div>
+            <div class="text-muted" style="font-size:0.72rem;">Always here to help</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES SECTION -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <p class="small text-uppercase fw-semibold mb-1" style="color:var(--veloria-primary);letter-spacing:2px;">Browse By</p>
+      <h2 class="fw-bold" style="font-family:'Playfair Display',serif;">Shop Categories</h2>
+    </div>
+
+    @if (categoriesLoading) {
+      <div class="row g-3">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="placeholder-glow text-center p-4 rounded-3" style="background:#f0f0f0;">
+              <div class="placeholder rounded-circle mx-auto mb-2" style="width:60px;height:60px;"></div>
+              <div class="placeholder col-8 mx-auto" style="height:12px;"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (categories.length > 0) {
+      <div class="row g-3">
+        @for (cat of categories; track cat._id) {
+          <div class="col-6 col-md-4 col-lg-2">
+            <a [routerLink]="['/shop']" [queryParams]="{category: cat.slug}" class="text-decoration-none">
+              <div class="category-card text-center p-4 h-100">
+                <div class="category-icon mx-auto mb-3">
+                  @if (cat.icon) {
+                    <i class="bi {{ cat.icon }} fs-4"></i>
+                  } @else {
+                    <i class="bi bi-grid fs-4"></i>
+                  }
+                </div>
+                <div class="fw-semibold small text-dark">{{ cat.name }}</div>
+                @if (cat.productCount) {
+                  <div class="text-muted" style="font-size:0.72rem;">{{ cat.productCount }} items</div>
+                }
+              </div>
+            </a>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Fallback static categories -->
+      <div class="row g-3">
+        @for (cat of [{name:'Women',slug:'women',icon:'bi-person-dress'},{name:'Men',slug:'men',icon:'bi-person'},{name:'Kids',slug:'kids',icon:'bi-emoji-smile'},{name:'Footwear',slug:'footwear',icon:'bi-shoe-fill'},{name:'Beauty',slug:'beauty',icon:'bi-stars'},{name:'Accessories',slug:'accessories',icon:'bi-bag'}]; track cat.slug) {
+          <div class="col-6 col-md-4 col-lg-2">
+            <a [routerLink]="['/shop']" [queryParams]="{category: cat.slug}" class="text-decoration-none">
+              <div class="category-card text-center p-4 h-100">
+                <div class="category-icon mx-auto mb-3">
+                  <i class="bi {{ cat.icon }} fs-4"></i>
+                </div>
+                <div class="fw-semibold small text-dark">{{ cat.name }}</div>
+              </div>
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS SECTION -->
+<section class="py-5" style="background:var(--veloria-light-grey);">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <p class="small text-uppercase fw-semibold mb-1" style="color:var(--veloria-primary);letter-spacing:2px;">Handpicked For You</p>
+        <h2 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">Featured Products</h2>
+      </div>
+      <a routerLink="/shop" class="btn btn-veloria-outline d-none d-md-block">View All</a>
+    </div>
+
+    @if (loading) {
+      <div class="row g-3">
+        @for (i of [1,2,3,4,5,6,7,8]; track i) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="placeholder-glow rounded-3 overflow-hidden" style="background:white;">
+              <div class="placeholder" style="height:250px;display:block;width:100%;"></div>
+              <div class="p-3">
+                <div class="placeholder col-4 mb-2" style="height:10px;"></div>
+                <div class="placeholder col-10 mb-1" style="height:14px;"></div>
+                <div class="placeholder col-6" style="height:14px;"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (featuredProducts.length > 0) {
+      <div class="row g-3">
+        @for (product of featuredProducts; track product._id) {
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="product-card h-100">
+              <div class="position-relative overflow-hidden">
+                <a [routerLink]="['/product', product.slug]">
+                  <img
+                    [src]="product.primaryImage || (product.images && product.images[0]) || 'https://placehold.co/400x300/f0f0f0/888?text=No+Image'"
+                    [alt]="product.name"
+                    class="product-image w-100"
+                    style="height:250px;object-fit:cover;"
+                  >
+                </a>
+                @if (getDiscount(product) > 0) {
+                  <span class="position-absolute top-0 start-0 m-2 badge" style="background:var(--veloria-primary);font-size:0.7rem;">
+                    -{{ getDiscount(product) }}%
+                  </span>
+                }
+                <button
+                  class="wishlist-btn"
+                  [class.active]="isWishlisted(product._id)"
+                  (click)="toggleWishlist(product)"
+                  title="Wishlist"
+                >
+                  <i class="bi" [class.bi-heart-fill]="isWishlisted(product._id)" [class.bi-heart]="!isWishlisted(product._id)"></i>
+                </button>
+              </div>
+              <div class="p-3">
+                <div class="product-category mb-1">{{ product.category?.name || 'Fashion' }}</div>
+                <a [routerLink]="['/product', product.slug]" class="text-decoration-none text-dark">
+                  <p class="product-title fw-semibold mb-2">{{ product.name }}</p>
+                </a>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="product-price">₹{{ product.price | number }}</span>
+                    @if (product.comparePrice && product.comparePrice > product.price) {
+                      <span class="product-old-price ms-2">₹{{ product.comparePrice | number }}</span>
+                    }
+                  </div>
+                  <button
+                    class="btn btn-sm px-3 py-1 fw-semibold"
+                    style="background:var(--veloria-primary);color:white;border-radius:20px;font-size:0.78rem;"
+                    (click)="addToCart(product)"
+                    [disabled]="product.stock === 0"
+                  >
+                    @if (product.stock === 0) { Out of Stock } @else { Add }
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="text-center mt-4 d-md-none">
+        <a routerLink="/shop" class="btn btn-veloria-outline px-5">View All Products</a>
+      </div>
+    } @else {
+      <div class="text-center py-5">
+        <i class="bi bi-bag fs-1 text-muted"></i>
+        <p class="text-muted mt-3">No featured products available</p>
+        <a routerLink="/shop" class="btn btn-veloria">Browse Shop</a>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<section class="py-5" style="background:linear-gradient(135deg, var(--veloria-dark) 0%, #4a4a4a 50%, var(--veloria-primary) 100%);">
+  <div class="container text-center text-white">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <p class="small text-uppercase fw-semibold mb-2" style="color:var(--veloria-primary-light);letter-spacing:3px;">Limited Time Offer</p>
+        <h2 class="fw-bold mb-3" style="font-family:'Playfair Display',serif;font-size:2.2rem;">
+          Get 10% Off Your First Order
+        </h2>
+        <p class="mb-4" style="color:rgba(255,255,255,0.8);">
+          Use code <strong style="color:var(--veloria-primary-light);font-size:1.1rem;">VELORIA10</strong> at checkout and elevate your wardrobe today.
+        </p>
+        <a routerLink="/shop" class="btn btn-veloria px-5 py-2 fw-semibold fs-5">Shop Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER SECTION -->
+<section class="newsletter-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <i class="bi bi-envelope-heart fs-1 mb-3" style="color:var(--veloria-primary);"></i>
+        <h3 class="fw-bold mb-2" style="font-family:'Playfair Display',serif;">Stay in the Loop</h3>
+        <p class="text-muted mb-4">Subscribe for exclusive offers, new arrivals, and style inspiration delivered to your inbox.</p>
+
+        @if (newsletterDone) {
+          <div class="alert alert-success border-0 py-3 px-4 rounded-3">
+            <i class="bi bi-check-circle-fill me-2"></i> Thank you for subscribing!
+          </div>
+        } @else {
+          <form (ngSubmit)="subscribeNewsletter()" class="d-flex gap-2 flex-column flex-sm-row">
+            <input
+              type="email"
+              [(ngModel)]="newsletterEmail"
+              name="newsletterEmail"
+              class="form-control py-2 px-4"
+              placeholder="Enter your email address"
+              required
+              style="border-radius:30px;border:2px solid var(--veloria-primary-light);"
+            >
+            <button
+              type="submit"
+              class="btn btn-veloria px-4 py-2 fw-semibold text-nowrap"
+              [disabled]="newsletterSubmitting"
+              style="border-radius:30px;"
+            >
+              @if (newsletterSubmitting) {
+                <span class="spinner-border spinner-border-sm me-1"></span>
+              }
+              Subscribe
+            </button>
+          </form>
+          <p class="text-muted mt-2" style="font-size:0.78rem;">No spam, ever. Unsubscribe anytime.</p>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY VELORIA -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="small text-uppercase fw-semibold mb-1" style="color:var(--veloria-primary);letter-spacing:2px;">Our Promise</p>
+      <h2 class="fw-bold" style="font-family:'Playfair Display',serif;">Why Choose Veloria?</h2>
+    </div>
+    <div class="row g-4">
+      @for (feature of [
+        {icon:'bi-gem', title:'Premium Quality', desc:'Every piece is handpicked for quality, craftsmanship, and lasting style.'},
+        {icon:'bi-heart', title:'Curated Styles', desc:'Trending looks curated by fashion experts just for you.'},
+        {icon:'bi-recycle', title:'Sustainable Fashion', desc:'We partner with eco-conscious brands for a greener tomorrow.'},
+        {icon:'bi-patch-check', title:'Authentic Products', desc:'100% genuine products with full brand guarantee.'}
+      ]; track feature.title) {
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="flip-card w-100">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <i class="bi {{ feature.icon }} fs-1 mb-3"></i>
+                <h5 class="fw-bold mb-0">{{ feature.title }}</h5>
+              </div>
+              <div class="flip-card-back">
+                <i class="bi {{ feature.icon }} fs-2 mb-2"></i>
+                <h6 class="fw-bold mb-2">{{ feature.title }}</h6>
+                <p class="small mb-0" style="opacity:0.9;">{{ feature.desc }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

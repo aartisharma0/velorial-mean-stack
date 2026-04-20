@@ -1,0 +1,20 @@
+@if(order) {
+<div class="d-flex justify-content-between align-items-center mb-4"><h5 class="fw-bold mb-0">Order {{order.orderNumber}}</h5><span class="badge bg-info px-3 py-2">{{order.status}}</span></div>
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table mb-0">
+      <thead class="table-light"><tr><th>Product</th><th>Price</th><th>Qty</th><th class="text-end">Total</th></tr></thead>
+      <tbody>@for(i of order.items;track $index){<tr><td>{{i.product?.name}}</td><td>&#8377;{{i.unitPrice}}</td><td>{{i.qty}}</td><td class="text-end">&#8377;{{i.total}}</td></tr>}</tbody>
+    </table></div>
+    <div class="card-footer bg-white text-end"><strong style="color:var(--veloria-primary)">Total: &#8377;{{order.total}}</strong></div></div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Update Status</h6></div><div class="card-body">
+      <select class="form-select mb-2" [(ngModel)]="newStatus"><option value="pending">Pending</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select>
+      <input class="form-control mb-2" [(ngModel)]="tracking" placeholder="Tracking Number">
+      <button class="btn btn-veloria btn-sm w-100" (click)="updateStatus()">Update</button>
+    </div></div>
+    <div class="card border-0 shadow-sm"><div class="card-body small"><h6 class="fw-semibold">Customer</h6>{{order.user?.name}}<br>{{order.user?.email}}</div></div>
+  </div>
+</div>
+}

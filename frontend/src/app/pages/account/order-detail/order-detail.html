@@ -1,0 +1,75 @@
+<div class="container py-4">
+  @if(order) {
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="fw-bold mb-0">Order {{order.orderNumber}}</h4>
+      <div class="d-flex gap-2 align-items-center">
+        <button class="btn btn-sm btn-outline-dark" (click)="openInvoice()"><i class="bi bi-receipt me-1"></i>Invoice</button>
+        <span class="badge px-3 py-2" [class]="statusClass(order.status)">{{order.status}}</span>
+      </div>
+    </div>
+
+    @if(order.trackingNumber) {
+      <div class="alert alert-info small mb-3"><i class="bi bi-truck me-2"></i>Tracking: <strong>{{order.trackingNumber}}</strong></div>
+    }
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+          <thead class="table-light"><tr><th>Product</th><th>Price</th><th>Qty</th><th class="text-end">Total</th></tr></thead>
+          <tbody>
+            @for(item of order.items; track $index) {
+              <tr>
+                <td class="d-flex align-items-center gap-2">
+                  @if(item.product?.images?.[0]) { <img [src]="item.product.images[0]" class="rounded" style="width:45px;height:45px;object-fit:cover;"> }
+                  <div><span class="fw-semibold small">{{item.product?.name}}</span>
+                  @if(item.variantLabel) { <br><small class="text-muted">{{item.variantLabel}}</small> }</div>
+                </td>
+                <td class="small">&#8377;{{item.unitPrice}}</td>
+                <td>{{item.qty}}</td>
+                <td class="text-end fw-semibold">&#8377;{{item.total}}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer bg-white">
+        <div class="row justify-content-end">
+          <div class="col-md-5">
+            <div class="d-flex justify-content-between small mb-1"><span>Subtotal</span><span>&#8377;{{order.subtotal}}</span></div>
+            @if(order.discount > 0) { <div class="d-flex justify-content-between small mb-1 text-success"><span>Discount</span><span>-&#8377;{{order.discount}}</span></div> }
+            <div class="d-flex justify-content-between small mb-1"><span>Tax</span><span>&#8377;{{order.tax}}</span></div>
+            <div class="d-flex justify-content-between small mb-1"><span>Shipping</span><span>{{order.shippingCost > 0 ? '&#8377;'+order.shippingCost : 'FREE'}}</span></div>
+            <hr class="my-2">
+            <div class="d-flex justify-content-between fw-bold"><span>Total</span><span style="color:var(--veloria-primary);">&#8377;{{order.total}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      @if(order.shippingAddress) {
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100"><div class="card-body small">
+            <h6 class="fw-semibold mb-2">Shipping Address</h6>
+            <strong>{{order.shippingAddress.fullName}}</strong><br>
+            {{order.shippingAddress.street}}<br>
+            {{order.shippingAddress.city}}, {{order.shippingAddress.state}} {{order.shippingAddress.zip}}<br>
+            {{order.shippingAddress.country}}
+            @if(order.shippingAddress.phone) { <br>Phone: {{order.shippingAddress.phone}} }
+          </div></div>
+        </div>
+      }
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body small">
+          <h6 class="fw-semibold mb-2">Payment</h6>
+          <div>Method: <strong class="text-uppercase">{{order.paymentMethod}}</strong></div>
+          @if(order.payment) {
+            <div>Status: <span class="badge" [class]="order.payment.status==='completed'?'bg-success':'bg-warning'">{{order.payment.status}}</span></div>
+            @if(order.payment.transactionId) { <div>Txn: <code>{{order.payment.transactionId}}</code></div> }
+            @if(order.payment.paidAt) { <div>Paid: {{order.payment.paidAt | date}}</div> }
+          }
+        </div></div>
+      </div>
+    </div>
+  }
+</div>

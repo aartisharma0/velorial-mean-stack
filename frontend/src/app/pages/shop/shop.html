@@ -1,0 +1,251 @@
+<div class="container py-4">
+  <!-- Page Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;font-size:1.8rem;">
+        @if (searchQuery) { Search: "{{ searchQuery }}" }
+        @else if (selectedCategory) { {{ selectedCategory | titlecase }} }
+        @else { All Products }
+      </h1>
+      @if (!loading) {
+        <p class="text-muted mb-0 small">{{ totalProducts }} products found</p>
+      }
+    </div>
+    <!-- Mobile filter toggle -->
+    <button class="btn btn-sm d-lg-none px-3 py-2" style="border:1.5px solid var(--veloria-primary);color:var(--veloria-primary);border-radius:8px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+      <i class="bi bi-sliders me-1"></i> Filters
+    </button>
+  </div>
+
+  <div class="row g-4">
+    <!-- SIDEBAR (Desktop) -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="card border-0 shadow-sm" style="border-radius:12px;">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="fw-bold mb-0">Filters</h6>
+            @if (selectedCategory || minPrice || maxPrice) {
+              <button class="btn btn-sm p-0 text-danger small" (click)="clearFilters()">
+                <i class="bi bi-x-circle me-1"></i>Clear
+              </button>
+            }
+          </div>
+
+          <!-- Category Filter -->
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Category</h6>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="cat" id="cat-all" [(ngModel)]="selectedCategory" value="" (change)="applyFilters()">
+              <label class="form-check-label small" for="cat-all">All Categories</label>
+            </div>
+            @for (cat of categories; track cat._id) {
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="cat" [id]="'cat-'+cat._id" [(ngModel)]="selectedCategory" [value]="cat.slug" (change)="applyFilters()">
+                <label class="form-check-label small" [for]="'cat-'+cat._id">{{ cat.name }}</label>
+              </div>
+            }
+          </div>
+
+          <!-- Price Range -->
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Price Range</h6>
+            <div class="row g-2">
+              <div class="col-6">
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="minPrice" placeholder="Min ₹" min="0">
+              </div>
+              <div class="col-6">
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="maxPrice" placeholder="Max ₹" min="0">
+              </div>
+            </div>
+            <button class="btn btn-sm w-100 mt-2 fw-semibold" style="background:var(--veloria-pink-soft);color:var(--veloria-primary);border:1px solid var(--veloria-primary-light);border-radius:8px;" (click)="applyFilters()">Apply</button>
+          </div>
+
+          <!-- Sort -->
+          <div class="mb-2">
+            <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Sort By</h6>
+            <select class="form-select form-select-sm" [(ngModel)]="sortBy" (change)="applyFilters()">
+              <option value="newest">Newest First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="popular">Most Popular</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div class="col-lg-9">
+      <!-- Sort bar (desktop top) -->
+      <div class="d-none d-lg-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          @for (preset of [{label:'New In',sort:'newest'},{label:'Price ↑',sort:'price_asc'},{label:'Price ↓',sort:'price_desc'},{label:'Popular',sort:'popular'}]; track preset.sort) {
+            <button
+              class="btn btn-sm px-3"
+              [style.background]="sortBy === preset.sort ? 'var(--veloria-primary)' : 'white'"
+              [style.color]="sortBy === preset.sort ? 'white' : 'var(--veloria-dark)'"
+              style="border:1.5px solid #e0e0e0;border-radius:20px;"
+              (click)="sortBy = preset.sort; applyFilters()"
+            >{{ preset.label }}</button>
+          }
+        </div>
+        <span class="text-muted small">{{ totalProducts }} results</span>
+      </div>
+
+      @if (loading) {
+        <div class="row g-3">
+          @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track i) {
+            <div class="col-6 col-md-4">
+              <div class="placeholder-glow rounded-3 overflow-hidden bg-white">
+                <div class="placeholder" style="height:240px;display:block;width:100%;"></div>
+                <div class="p-3">
+                  <div class="placeholder col-4 mb-2" style="height:10px;"></div>
+                  <div class="placeholder col-10 mb-1" style="height:14px;"></div>
+                  <div class="placeholder col-6" style="height:14px;"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (products.length > 0) {
+        <div class="row g-3">
+          @for (product of products; track product._id) {
+            <div class="col-6 col-md-4">
+              <div class="product-card h-100">
+                <div class="position-relative overflow-hidden">
+                  <a [routerLink]="['/product', product.slug]">
+                    <img
+                      [src]="product.primaryImage || (product.images && product.images[0]) || 'https://placehold.co/400x300/f0f0f0/888?text=No+Image'"
+                      [alt]="product.name"
+                      class="product-image w-100"
+                      style="height:240px;object-fit:cover;"
+                    >
+                  </a>
+                  @if (getDiscount(product) > 0) {
+                    <span class="position-absolute top-0 start-0 m-2 badge" style="background:var(--veloria-primary);font-size:0.7rem;">
+                      -{{ getDiscount(product) }}%
+                    </span>
+                  }
+                  @if (product.stock === 0) {
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-secondary">Out of Stock</span>
+                  }
+                  <button
+                    class="wishlist-btn"
+                    [class.active]="isWishlisted(product._id)"
+                    (click)="toggleWishlist(product)"
+                    title="Wishlist"
+                  >
+                    <i class="bi" [class.bi-heart-fill]="isWishlisted(product._id)" [class.bi-heart]="!isWishlisted(product._id)"></i>
+                  </button>
+                </div>
+                <div class="p-3">
+                  <div class="product-category mb-1">{{ product.category?.name || 'Fashion' }}</div>
+                  <a [routerLink]="['/product', product.slug]" class="text-decoration-none text-dark">
+                    <p class="product-title fw-semibold mb-2">{{ product.name }}</p>
+                  </a>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                      <span class="product-price">₹{{ product.price | number }}</span>
+                      @if (product.comparePrice && product.comparePrice > product.price) {
+                        <span class="product-old-price ms-2">₹{{ product.comparePrice | number }}</span>
+                      }
+                    </div>
+                    <button
+                      class="btn btn-sm px-3 py-1 fw-semibold"
+                      style="background:var(--veloria-primary);color:white;border-radius:20px;font-size:0.78rem;"
+                      (click)="addToCart(product)"
+                      [disabled]="product.stock === 0"
+                    >Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- PAGINATION -->
+        @if (totalPages > 1) {
+          <nav class="mt-4 d-flex justify-content-center">
+            <ul class="pagination pagination-sm mb-0 gap-1">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <button class="page-link rounded-2" (click)="goToPage(currentPage - 1)" style="border-color:#e0e0e0;">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+              </li>
+              @for (page of pages; track page) {
+                <li class="page-item" [class.active]="page === currentPage">
+                  <button
+                    class="page-link rounded-2"
+                    (click)="goToPage(page)"
+                    [style.background]="page === currentPage ? 'var(--veloria-primary)' : 'white'"
+                    [style.border-color]="page === currentPage ? 'var(--veloria-primary)' : '#e0e0e0'"
+                    [style.color]="page === currentPage ? 'white' : 'inherit'"
+                  >{{ page }}</button>
+                </li>
+              }
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <button class="page-link rounded-2" (click)="goToPage(currentPage + 1)" style="border-color:#e0e0e0;">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        }
+      } @else {
+        <div class="text-center py-5">
+          <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+          <h5 class="text-muted">No products found</h5>
+          <p class="text-muted small">Try adjusting your filters or search term</p>
+          <button class="btn btn-veloria-outline mt-2" (click)="clearFilters()">Clear Filters</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- OFFCANVAS FILTER (Mobile) -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
+  <div class="offcanvas-header" style="border-bottom:1px solid #eee;">
+    <h5 class="offcanvas-title fw-bold">Filters</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="mb-4">
+      <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Category</h6>
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="radio" name="mcat" id="mcat-all" [(ngModel)]="selectedCategory" value="" (change)="applyFilters()">
+        <label class="form-check-label" for="mcat-all">All Categories</label>
+      </div>
+      @for (cat of categories; track cat._id) {
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" name="mcat" [id]="'mcat-'+cat._id" [(ngModel)]="selectedCategory" [value]="cat.slug" (change)="applyFilters()">
+          <label class="form-check-label" [for]="'mcat-'+cat._id">{{ cat.name }}</label>
+        </div>
+      }
+    </div>
+    <div class="mb-4">
+      <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Price Range</h6>
+      <div class="row g-2">
+        <div class="col-6">
+          <input type="number" class="form-control form-control-sm" [(ngModel)]="minPrice" placeholder="Min ₹" min="0">
+        </div>
+        <div class="col-6">
+          <input type="number" class="form-control form-control-sm" [(ngModel)]="maxPrice" placeholder="Max ₹" min="0">
+        </div>
+      </div>
+    </div>
+    <div class="mb-4">
+      <h6 class="fw-semibold mb-3 small text-uppercase" style="letter-spacing:1px;color:var(--veloria-grey);">Sort By</h6>
+      <select class="form-select" [(ngModel)]="sortBy">
+        <option value="newest">Newest First</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="popular">Most Popular</option>
+      </select>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-veloria flex-grow-1" (click)="applyFilters()" data-bs-dismiss="offcanvas">Apply Filters</button>
+      <button class="btn btn-veloria-outline" (click)="clearFilters()" data-bs-dismiss="offcanvas">Clear</button>
+    </div>
+  </div>
+</div>

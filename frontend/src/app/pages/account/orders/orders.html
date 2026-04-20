@@ -1,0 +1,16 @@
+<div class="container py-4">
+  <h4 class="fw-bold mb-4">My Orders</h4>
+  @for(order of orders; track order._id) {
+    <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-semibold">{{order.orderNumber}} <span class="badge" [class]="statusClass(order.status)">{{order.status}}</span></span>
+        <small class="text-muted">{{order.createdAt | date}}</small>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span style="color:var(--veloria-primary)" class="fw-bold">&#8377;{{order.total}}</span>
+        <a [routerLink]="['/account/orders',order._id]" class="btn btn-sm btn-outline-dark">View Details</a>
+      </div>
+    </div></div>
+  }
+  @if(orders.length===0) { <div class="text-center py-5"><i class="bi bi-bag fs-1" style="color:var(--veloria-primary-light)"></i><h5 class="mt-3">No orders yet</h5><a routerLink="/shop" class="btn btn-veloria mt-2">Start Shopping</a></div> }
+</div>

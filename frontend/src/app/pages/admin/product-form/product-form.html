@@ -1,0 +1,36 @@
+<h5 class="fw-bold mb-4">{{isEdit?'Edit':'Add'}} Product</h5>
+<form (ngSubmit)="save()"><div class="row">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Basic Info</h6></div><div class="card-body">
+      <div class="mb-3"><label class="form-label small fw-semibold">Name</label><input class="form-control" [(ngModel)]="form.name" name="name" (input)="slugify()" required></div>
+      <div class="mb-3"><label class="form-label small fw-semibold">Description</label><textarea class="form-control" [(ngModel)]="form.description" name="desc" rows="4"></textarea></div>
+      <div class="row"><div class="col-6"><label class="form-label small fw-semibold">Category</label><select class="form-select" [(ngModel)]="form.category" name="cat" required>@for(c of categories;track c._id){<option [ngValue]="c._id">{{c.name}}</option>}</select></div>
+      <div class="col-6"><label class="form-label small fw-semibold">SKU</label><input class="form-control" [(ngModel)]="form.sku" name="sku"></div></div>
+    </div></div>
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Images</h6></div><div class="card-body">
+      <div class="d-flex gap-2 flex-wrap mb-2">@for(img of form.images;track $index){<div class="position-relative"><img [src]="img" style="width:60px;height:60px;object-fit:cover;" class="rounded"><button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" style="padding:0 4px;font-size:0.6rem;" (click)="removeImage($index)">x</button></div>}</div>
+      <div class="input-group"><input class="form-control" [(ngModel)]="newImage" name="ni" placeholder="Image URL"><button class="btn btn-outline-dark" type="button" (click)="addImage()">Add</button></div>
+    </div></div>
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white d-flex justify-content-between"><h6 class="mb-0 fw-semibold">Variants</h6><button type="button" class="btn btn-sm btn-outline-dark" (click)="addVariant()"><i class="bi bi-plus"></i></button></div><div class="card-body">
+      @for(v of form.variants;track $index){<div class="row g-2 mb-2 align-items-end">
+        <div class="col"><input class="form-control form-control-sm" [(ngModel)]="v.sku" [name]="'vs'+$index" placeholder="SKU"></div>
+        <div class="col"><input class="form-control form-control-sm" [(ngModel)]="v.size" [name]="'vsi'+$index" placeholder="Size"></div>
+        <div class="col"><input class="form-control form-control-sm" [(ngModel)]="v.color" [name]="'vc'+$index" placeholder="Color"></div>
+        <div class="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="v.stock" [name]="'vst'+$index" placeholder="Stock"></div>
+        <div class="col-auto"><button type="button" class="btn btn-sm btn-outline-danger" (click)="removeVariant($index)"><i class="bi bi-trash"></i></button></div>
+      </div>}
+    </div></div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Pricing</h6></div><div class="card-body">
+      <div class="mb-3"><label class="form-label small">Price</label><input type="number" class="form-control" [(ngModel)]="form.price" name="price" required></div>
+      <div class="mb-3"><label class="form-label small">Compare Price</label><input type="number" class="form-control" [(ngModel)]="form.comparePrice" name="cp"></div>
+      <div class="mb-3"><label class="form-label small">Stock</label><input type="number" class="form-control" [(ngModel)]="form.stock" name="stock" required></div>
+    </div></div>
+    <div class="card border-0 shadow-sm mb-4"><div class="card-header bg-white"><h6 class="mb-0 fw-semibold">Status</h6></div><div class="card-body">
+      <select class="form-select mb-3" [(ngModel)]="form.status" name="status"><option value="draft">Draft</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
+      <div class="form-check form-switch"><input class="form-check-input" type="checkbox" [(ngModel)]="form.featured" name="feat"><label class="form-check-label">Featured</label></div>
+    </div></div>
+    <div class="d-grid gap-2"><button class="btn btn-veloria" type="submit">{{isEdit?'Update':'Create'}} Product</button><a routerLink="/admin/products" class="btn btn-outline-secondary">Cancel</a></div>
+  </div>
+</div></form>

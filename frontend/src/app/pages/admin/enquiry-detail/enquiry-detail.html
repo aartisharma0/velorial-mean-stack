@@ -1,0 +1,14 @@
+@if(enquiry) {
+<h5 class="fw-bold mb-4">Enquiry: {{enquiry.subject}}</h5>
+<div class="row g-4">
+  <div class="col-lg-8"><div class="card border-0 shadow-sm"><div class="card-body">
+    <div class="p-3 rounded mb-3" style="background:var(--veloria-pink-soft);white-space:pre-wrap;">{{enquiry.message}}</div>
+    <small class="text-muted">From: {{enquiry.name}} ({{enquiry.email}}) | {{enquiry.createdAt | date}}</small>
+  </div></div></div>
+  <div class="col-lg-4"><div class="card border-0 shadow-sm"><div class="card-body">
+    <h6 class="fw-semibold mb-3">Update Status</h6>
+    <select class="form-select mb-2" [(ngModel)]="newStatus"><option value="new">New</option><option value="read">Read</option><option value="replied">Replied</option></select>
+    <button class="btn btn-veloria btn-sm w-100" (click)="update()">Update</button>
+  </div></div></div>
+</div>
+}
